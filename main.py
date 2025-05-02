@@ -47,22 +47,24 @@ input_data = pd.DataFrame({
     'weather_snow': [weather_vector[3]]
 })
 
-# Normalisasi fitur numerik
-numerical_features = ['precipitation', 'temp_min', 'wind']
-input_data[numerical_features] = scaler.transform(input_data[numerical_features])
+# Tombol untuk memicu prediksi
+if st.button("Prediksi"):
+    # Normalisasi fitur numerik
+    numerical_features = ['precipitation', 'temp_min', 'wind']
+    input_data[numerical_features] = scaler.transform(input_data[numerical_features])
 
-# Ubah ke format LSTM (samples, timesteps, features)
-input_array = input_data.astype(np.float32).values.reshape(1, input_data.shape[1], 1)
+    # Ubah ke format LSTM (samples, timesteps, features)
+    input_array = input_data.astype(np.float32).values.reshape(1, input_data.shape[1], 1)
 
-# Set input tensor
-interpreter.set_tensor(input_details[0]['index'], input_array)
+    # Set input tensor
+    interpreter.set_tensor(input_details[0]['index'], input_array)
 
-# Jalankan prediksi
-interpreter.invoke()
+    # Jalankan prediksi
+    interpreter.invoke()
 
-# Ambil hasil prediksi
-predicted_temp = interpreter.get_tensor(output_details[0]['index'])[0][0]
+    # Ambil hasil prediksi
+    predicted_temp = interpreter.get_tensor(output_details[0]['index'])[0][0]
 
-# Tampilkan hasil
-st.subheader("🌡️ Hasil Prediksi:")
-st.success(f"Suhu Maksimum yang Diprediksi: **{predicted_temp:.2f}°C**")
+    # Tampilkan hasil
+    st.subheader("🌡️ Hasil Prediksi:")
+    st.success(f"Suhu Maksimum yang Diprediksi: **{predicted_temp:.2f}°C**")
